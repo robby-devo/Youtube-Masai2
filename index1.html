@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <a href="#">
+        <img src="logo.png" alt="YouTube Logo" class="youtube-logo" />
+      </a>
+
+      <input
+        class="search-input"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+      />
+      <button class="search-btn">
+        <img src="magnify.svg" />
+      </button>
+
+      <div class="menu-icons">
+        <a href="#">
+          <img src="video-plus.svg" alt="Upload Video" />
+        </a>
+        <a href="#">
+          <img src="apps.svg" alt="Apps" />
+        </a>
+        <a href="#">
+          <img src="bell.svg" alt="Notifications" />
+        </a>
+        <a href="#">
+          <img
+            class="menu-channel-icon"
+            src="http:///unsplash.it/36/36?gravity=center"
+            alt="Your Channel"
+          />
+        </a>
+      </div>
+    </header>
+    <div class="categories">
+      <section class="category-section">
+        <button class="category active">All</button>
+        <button class="category">Category 1</button>
+        <button class="category">Category 2</button>
+        <button class="category">Category 3</button>
+        <button class="category">Category 4</button>
+        <button class="category">Category 5</button>
+        <button class="category">Category 6</button>
+        <button class="category">Category 7</button>
+        <button class="category">Category 8</button>
+        <button class="category">Category 9</button>
+      </section>
+    </div>
+
+    <!-- <div id="videos"></div> -->
+
+    <div id="videos">
+      <div id="video-section"></div>
+    </div>
+  </body>
+</html>
+<script>
+  //   var form = document.getElementById("");
+  var btn = document.querySelector(".search-btn");
+
+  // GET https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&regionCode=in&key=AIzaSyBJbUqM6ULZJScWGPCgZPRUaXvL40NsbMM
+
+  let videos_div = document.getElementById("videos");
+  async function showVideos(api) {
+    videos_div.innerHTML = null;
+
+    let res = await fetch(api);
+
+    let data = await res.json();
+    let video_data = data.items;
+    console.log(video_data);
+
+    video_data = video_data.filter(function (el) {
+      return el.id.videoId != undefined;
+    });
+
+    // let { items } = data;
+
+    // items = items.filter((el) => {
+    //   return el.id.videoId != undefined;
+    // });
+
+    video_data.forEach(function (el) {
+      let div = document.createElement("div");
+      div.setAttribute("id", "video-section");
+
+      div.style.marginTop = "20px";
+
+      div.innerHTML = `<iframe
+      width="560"
+      height="315"
+      src="https://www.youtube.com/embed/${el.id.videoId}"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>`;
+
+      videos_div.appendChild(div);
+    });
+  }
+  showVideos(
+    "https://youtube.googleapis.com/youtube/v3/search?part=snippet&chart=mostPopular&regionCode=in&key=AIzaSyBJbUqM6ULZJScWGPCgZPRUaXvL40NsbMM&maxResults=10"
+  );
+
+  btn.addEventListener("click", function () {
+    var q = document.querySelector(".search-input").value;
+
+    showVideos(
+      `https://youtube.googleapis.com/youtube/v3/search?q=${q}&key=AIzaSyAk-M3RBAXHpPVcgY4w1zVEe3sAFeXidXc&maxResults=10`
+    );
+  });
+</script>
